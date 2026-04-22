@@ -4,11 +4,15 @@
 
 ## Запуск
 
-Откройте `Obsidian Ink.html` в браузере — сайт полностью статический, без сборки.
+Откройте `index.html` в браузере — сайт полностью статический, без сборки.
+
+### GitHub Pages
+
+Репозиторий готов к публикации через GitHub Pages: в настройках репо выберите ветку `main` и папку `/ (root)` — сайт откроется по адресу `https://<username>.github.io/<repo>/`.
 
 ## Структура
 
-- `Obsidian Ink.html` — корневой файл с React + Babel
+- `index.html` — корневой файл с React + Babel
 - `styles.css` — все стили (тёмная палитра + янтарный акцент, адаптив до 420px)
 - `components/` — React-компоненты по страницам:
   - `Shared.jsx` — Nav, Footer, Placeholder, Marquee, Tweaks
