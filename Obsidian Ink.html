@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Obsidian Ink — Tattoo Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Bebas+Neue&family=Permanent+Marker&family=Caveat+Brush&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700;1,900&family=UnifrakturCook:wght@700&family=Cinzel:wght@700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=5">
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="components/Shared.jsx"></script>
+<script type="text/babel" src="components/HomePage.jsx"></script>
+<script type="text/babel" src="components/ArtistsPage.jsx"></script>
+<script type="text/babel" src="components/PortfolioPage.jsx"></script>
+<script type="text/babel" src="components/AboutPage.jsx"></script>
+<script type="text/babel" src="components/BookingPage.jsx"></script>
+<script type="text/babel" src="components/ContactPage.jsx"></script>
+
+<script type="text/babel" data-presets="env,react">
+const { useState, useEffect } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "variant": "street",
+  "accent": "#f6b63c"
+}/*EDITMODE-END*/;
+
+const ACCENTS = [
+  { v: '#f6b63c', name: 'amber' },
+  { v: '#eb4b1f', name: 'blood' },
+  { v: '#d7ff3a', name: 'acid' },
+  { v: '#f2efe7', name: 'bone' },
+  { v: '#6e8bff', name: 'ink-blue' },
+];
+
+function App() {
+  const [currentPage, setCurrentPage] = useState(() => localStorage.getItem('oi-page') || 'home');
+  const [variant, setVariant] = useState(TWEAK_DEFAULTS.variant);
+  const [accent, setAccent] = useState(TWEAK_DEFAULTS.accent);
+  const [tweaksOpen, setTweaksOpen] = useState(false);
+
+  useEffect(() => { localStorage.setItem('oi-page', currentPage); window.scrollTo({top: 0, behavior: 'instant'}); }, [currentPage]);
+
+  useEffect(() => {
+    document.body.className = `theme-${variant}`;
+    document.documentElement.style.setProperty('--accent', accent);
+  }, [variant, accent]);
+
+  // Tweak mode integration
+  useEffect(() => {
+    const onMsg = (e) => {
+      if (!e.data || !e.data.type) return;
+      if (e.data.type === '__activate_edit_mode') setTweaksOpen(true);
+      if (e.data.type === '__deactivate_edit_mode') setTweaksOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({type: '__edit_mode_available'}, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const persist = (edits) => window.parent.postMessage({type: '__edit_mode_set_keys', edits}, '*');
+
+  const setV = (v) => { setVariant(v); persist({variant: v}); };
+  const setA = (a) => { setAccent(a); persist({accent: a}); };
+
+  const Page = {
+    home: HomePage,
+    artists: ArtistsPage,
+    portfolio: PortfolioPage,
+    about: AboutPage,
+    booking: BookingPage,
+    contact: ContactPage,
+  }[currentPage] || HomePage;
+
+  return (
+    <>
+      <Nav currentPage={currentPage} setCurrentPage={setCurrentPage}/>
+      <main data-screen-label={currentPage}>
+        <Page key={currentPage} setCurrentPage={setCurrentPage}/>
+      </main>
+      <Footer setCurrentPage={setCurrentPage}/>
+
+      {tweaksOpen && (
+        <div className="tweaks">
+          <h4>Tweaks</h4>
+          <div className="tweaks-row">
+            <label>Variant</label>
+            <div className="variant-pick">
+              <button className={variant === 'editorial' ? 'active' : ''} onClick={() => setV('editorial')}>Editorial</button>
+              <button className={variant === 'street' ? 'active' : ''} onClick={() => setV('street')}>Street</button>
+              <button className={variant === 'occult' ? 'active' : ''} onClick={() => setV('occult')}>Occult</button>
+            </div>
+          </div>
+          <div className="tweaks-row">
+            <label>Accent · {ACCENTS.find(a => a.v === accent)?.name || 'custom'}</label>
+            <div className="swatches">
+              {ACCENTS.map(a => (
+                <div key={a.v}
+                  className={`swatch ${accent === a.v ? 'active' : ''}`}
+                  style={{background: a.v}}
+                  onClick={() => setA(a.v)}
+                />
+              ))}
+            </div>
+          </div>
+          <div style={{fontSize: 10, color: 'var(--muted)', letterSpacing: '0.18em', marginTop: 12, lineHeight: 1.5, textTransform: 'uppercase'}}>
+            Editorial — чистая типографика<br/>Street — рукопись, плёнка, шумы<br/>Occult — готика, кровавый акцент
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
