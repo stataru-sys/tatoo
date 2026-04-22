@@ -92,6 +92,117 @@ body {
   padding: 14px 0;
 }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.nav-right { display: flex; align-items: center; gap: 14px; }
+
+/* Burger button — hidden on desktop */
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px; height: 40px;
+  background: transparent;
+  border: 1px solid var(--rule);
+  cursor: pointer;
+  padding: 0 10px;
+  transition: border-color .2s;
+}
+.nav-burger:hover { border-color: var(--bone); }
+.nav-burger span {
+  display: block;
+  height: 2px;
+  background: var(--bone);
+  width: 100%;
+  transition: transform .3s ease, opacity .2s ease;
+  transform-origin: center;
+}
+.nav-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile menu drawer */
+.mobile-menu {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 100dvh;
+  background: rgba(10, 10, 12, 0.97);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  z-index: 55;
+  padding: 100px 24px 40px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-12px);
+  transition: opacity .3s ease, transform .3s ease;
+  overflow-y: auto;
+}
+.mobile-menu.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.mobile-menu-inner {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mobile-menu-link {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  padding: 22px 8px;
+  border-bottom: 1px solid var(--rule);
+  font-family: 'Rubik Mono One', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--bone);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(-14px);
+  animation: mobileLinkIn .4s cubic-bezier(.2,.8,.2,1) forwards;
+  transition: color .2s, padding-left .2s;
+}
+.mobile-menu.open .mobile-menu-link:hover { padding-left: 16px; color: var(--accent); }
+.mobile-menu-link.active { color: var(--accent); }
+.mobile-menu-link.active .mobile-menu-arrow { opacity: 1; }
+.mobile-menu-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  min-width: 28px;
+}
+.mobile-menu-label { flex: 1; }
+.mobile-menu-arrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.mobile-menu.open .mobile-menu-link:hover .mobile-menu-arrow { opacity: 1; }
+.mobile-menu-cta {
+  margin-top: 30px;
+  width: 100%;
+  padding: 20px;
+  background: var(--accent);
+  color: var(--ink);
+  border: 0;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateX(-14px);
+  animation: mobileLinkIn .4s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes mobileLinkIn {
+  to { opacity: 1; transform: translateX(0); }
+}
 .logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
 .logo-mark {
   width: 34px; height: 34px;
@@ -700,7 +811,6 @@ body {
    Responsive — mobile
 ============================================= */
 @media (max-width: 720px) {
-  html { font-size: 15px; }
   .wrap, .wrap-wide { padding: 0 18px; }
   .section { padding: 70px 0; }
   .section.tight { padding: 50px 0; }
@@ -713,16 +823,17 @@ body {
   .logo-word { font-size: 12px; }
   .logo-sub { display: none; }
   .nav-cta { padding: 10px 14px; font-size: 10px; letter-spacing: 0.18em; }
+  .nav-burger { display: flex; }
 
   /* Body bg — no fixed attachment on mobile (iOS quirk) */
   body::before { background-attachment: scroll; background-size: 200% auto; background-position: center top; }
 
-  /* Typography */
-  .hero-title { font-size: clamp(56px, 18vw, 96px); }
-  .section-title { font-size: clamp(44px, 13vw, 80px); }
-  .step-title { font-size: clamp(36px, 11vw, 56px); }
-  .display, .headline { line-height: 0.92; }
-  .hero-kicker { font-size: 18px; margin-bottom: 14px; }
+  /* Typography — keep desktop-style bold scale, just reflow */
+  .hero-title { font-size: clamp(72px, 19vw, 140px); line-height: 0.88; }
+  .section-title { font-size: clamp(56px, 15vw, 110px); line-height: 0.9; }
+  .step-title { font-size: clamp(42px, 12vw, 72px); }
+  .display, .headline { line-height: 0.9; }
+  .hero-kicker { font-size: 20px; margin-bottom: 14px; }
 
   /* Hero */
   .hero { padding: 110px 0 40px; gap: 30px; }

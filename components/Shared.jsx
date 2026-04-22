@@ -79,6 +79,7 @@ function Placeholder({ label, mark, silhouette = "portrait", style, className = 
 /* ===== Nav ===== */
 function Nav({ currentPage, setCurrentPage }) {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll);
@@ -86,11 +87,18 @@ function Nav({ currentPage, setCurrentPage }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
   const links = ["home", "artists", "portfolio", "about", "contact"];
+  const go = (l) => { setCurrentPage(l); setMenuOpen(false); };
+
   return (
     <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
       <div className="wrap-wide nav-inner">
-        <div className="logo" onClick={() => setCurrentPage("home")}>
+        <div className="logo" onClick={() => go("home")}>
           <div className="logo-mark">OI</div>
           <div>
             <div className="logo-word">OBSIDIAN INK</div>
@@ -108,7 +116,40 @@ function Nav({ currentPage, setCurrentPage }) {
             </div>
           ))}
         </div>
-        <button className="nav-cta" onClick={() => setCurrentPage("booking")}>Записаться →</button>
+        <div className="nav-right">
+          <button className="nav-cta" onClick={() => go("booking")}>Записаться →</button>
+          <button
+            className={`nav-burger ${menuOpen ? "open" : ""}`}
+            aria-label="Меню"
+            onClick={() => setMenuOpen(v => !v)}
+          >
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+
+      <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+        <div className="mobile-menu-inner">
+          {links.map((l, i) => (
+            <div
+              key={l}
+              className={`mobile-menu-link ${currentPage === l ? "active" : ""}`}
+              onClick={() => go(l)}
+              style={{ animationDelay: `${0.05 + i * 0.06}s` }}
+            >
+              <span className="mobile-menu-num">0{i + 1}</span>
+              <span className="mobile-menu-label">{l}</span>
+              <span className="mobile-menu-arrow">→</span>
+            </div>
+          ))}
+          <button
+            className="mobile-menu-cta"
+            onClick={() => go("booking")}
+            style={{ animationDelay: `${0.05 + links.length * 0.06}s` }}
+          >
+            Записаться →
+          </button>
+        </div>
       </div>
     </nav>
   );
