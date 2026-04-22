@@ -58,9 +58,21 @@ body {
 .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; }
 
 /* Variant-specific heading stacks */
-.theme-editorial .headline { font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif; font-weight: 900; font-style: italic; letter-spacing: -0.02em; line-height: 0.9; }
-.theme-street    .headline { font-family: 'Permanent Marker', 'Caveat Brush', cursive; letter-spacing: 0; line-height: 0.9; }
-.theme-occult    .headline { font-family: 'UnifrakturCook', 'Cinzel', 'Playfair Display', serif; font-weight: 900; line-height: 0.92; letter-spacing: -0.01em; }
+.theme-editorial .headline,
+.theme-editorial .hero-title,
+.theme-editorial .section-title,
+.theme-editorial .step-title,
+.theme-editorial .artist-feature-name { font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif; font-weight: 900; font-style: italic; letter-spacing: -0.02em; line-height: 0.9; }
+.theme-street    .headline,
+.theme-street    .hero-title,
+.theme-street    .section-title,
+.theme-street    .step-title,
+.theme-street    .artist-feature-name { font-family: 'Permanent Marker', 'Caveat Brush', cursive; letter-spacing: 0; line-height: 0.9; }
+.theme-occult    .headline,
+.theme-occult    .hero-title,
+.theme-occult    .section-title,
+.theme-occult    .step-title,
+.theme-occult    .artist-feature-name { font-family: 'UnifrakturCook', 'Cinzel', 'Playfair Display', serif; font-weight: 900; line-height: 0.92; letter-spacing: -0.01em; }
 
 /* ========== Layout helpers ========== */
 .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
